@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" lang="en" class="h-100">
+<head th:replace="~{_commons/fragments/head :: defaultHead}" />
+<body class="d-flex flex-column h-100">
+<header th:replace="~{_commons/fragments/header :: defaultHeader}" />
+<main class="flex-shrink-0">
+	<div class="mt-5 pb-5"></div>
+	<div class="container">
+		<section layout:fragment="content">Page content goes here</section>
+	</div>
+</main>
+<footer th:replace="~{_commons/fragments/footer :: defaultFooter}" />
+</body>
+</html>

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="en"
+		class="h-100">
+<head th:replace="~{_commons/fragments/head :: defaultHead}" />
+<body class="d-flex flex-column h-100">
+<footer th:fragment="defaultFooter" class="footer mt-auto py-2 bg-body-tertiary">
+	<div class="container">
+		<div class="row align-items-center">
+			<div class="col-6 order-1 col-lg-3 order-lg-0">
+				<small th:text="${#temporals.format(serverDateTime, 'yyyy-MM-dd HH:mm:ss')}"
+						class="font-monospace text-muted">Server datetime</small>
+			</div>
+			<div class="col-12 order-0 col-lg-6 order-lg-1 text-center">
+				<small sec:authorize="isAuthenticated()" th:text="${currentUser?.roles}"
+						class="font-monospace text-muted" title="Current user roles">Current user roles</small>
+			</div>
+			<div class="col-6 order-2 col-lg-3 text-end">
+				<div class="btn-group dropup">
+					<button class="btn btn-secondary dropdown-toggle" id="bd-theme" type="button"
+							data-bs-toggle="dropdown" aria-expanded="false">Theme
+					</button>
+					<ul class="dropdown-menu" aria-labelledby="bd-theme">
+						<li><a class="dropdown-item" data-bs-theme-value="light" aria-pressed="false" href="#">Light</a>
+						</li>
+						<li><a class="dropdown-item" data-bs-theme-value="dark" aria-pressed="false" href="#">Dark</a>
+						</li>
+						<li>
+							<div class="dropdown-divider"></div>
+						</li>
+						<li><a class="dropdown-item" data-bs-theme-value="auto" aria-pressed="true" href="#">Auto</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+</footer>
+</body>
+</html>

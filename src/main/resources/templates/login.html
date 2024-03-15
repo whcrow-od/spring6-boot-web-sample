@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+		layout:decorate="~{_commons/layouts/default}" th:with="pageTitle='Login'">
+<body>
+<section layout:fragment="content" class="form-signin w-50 m-auto">
+	<form th:action="@{/authenticate}" method="POST"
+			th:with="errorCredentials=${param.error != null}, validationClass=${errorCredentials ? 'is-invalid' : ''}, loggedOut=${param.logout != null}">
+		<!-- CSRF token should be explicitly added to the form of custom login/logout page -->
+		<input type="hidden" th:if="${_csrf}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+		<div class="row justify-content-between">
+			<div class="col-md-6 h3">Please log in</div>
+			<div class="col-md-6 text-md-end">No account? <a th:href="@{/authorizedUser}">Create one &rarr;</a></div>
+		</div>
+		<div th:if="${loggedOut}" class="alert alert-success alert-dismissible fade show" role="alert">
+			<i class="bi bi-exclamation-triangle-fill flex-shrink-0 me-2"></i>
+			<span>Logged out</span>
+			<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+		</div>
+		<div class="form-floating">
+			<input type="text" id="inputUsername" name="username" class="form-control" placeholder="Username" required
+					th:classappend="${validationClass}">
+			<label for="inputUsername" class="form-label">Username</label>
+		</div>
+		<div class="form-floating">
+			<input type="password" id="inputPassword" name="password" class="form-control" placeholder="password"
+					required th:classappend="${validationClass}">
+			<label for="inputPassword" class="form-label">Password</label>
+			<div th:if="${errorCredentials}" class="invalid-feedback">Invalid credentials</div>
+		</div>
+		<button type="submit" class="btn btn-primary w-100 my-2">Log in</button>
+	</form>
+</section>
+</body>
+</html>

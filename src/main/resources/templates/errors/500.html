@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+		layout:decorate="~{_commons/layouts/default}" th:with="pageTitle=|${error.statusCode.value} ${error.statusCode.reasonPhrase}|">
+<body>
+<section layout:fragment="content">
+	<h1 class="py-5 text-center">Oops!!!</h1>
+	<div class="text-center">
+		<img th:src="@{/assets/images/errors/500.png}" class="img-fluid" th:alt="|${error.statusCode.value} ${error.statusCode.reasonPhrase}|" />
+	</div>
+</section>
+</body>
+</html>

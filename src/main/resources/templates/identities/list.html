@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+		layout:decorate="~{_commons/layouts/default}" th:with="pageTitle='List Identities'">
+<body>
+<section layout:fragment="content">
+	<h1 class="py-5 text-center">List of identities</h1>
+	<table class="table table-bordered table-striped table-hover">
+		<caption>List of identities</caption>
+		<thead>
+		<tr>
+			<th>ID</th>
+			<th>Username</th>
+			<th></th>
+		</tr>
+		</thead>
+		<tbody class="table-group-divider">
+		<tr th:each="identity : ${identities}">
+			<td th:text="${identity.id}">ID</td>
+			<td th:text="${identity.username}">Username</td>
+			<td>
+				<div class="row text-center fs-5">
+					<div class="col">
+						<a th:href="@{|/identities/${identity.id}|}" title="View">
+							<i class="bi bi-info-square"></i>
+						</a>
+					</div>
+					<div class="col">
+						<a th:href="@{|/identities/update/${identity.id}|}" title="Update">
+							<i class="bi bi-pencil-square"></i>
+						</a>
+					</div>
+					<div class="col">
+						<a th:href="@{|/identities/delete/${identity.id}|}" title="Delete">
+							<i class="bi bi-trash3"></i>
+						</a>
+					</div>
+				</div>
+			</td>
+		</tr>
+		</tbody>
+	</table>
+</section>
+</body>
+</html>

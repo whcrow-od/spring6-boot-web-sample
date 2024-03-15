@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+		layout:decorate="~{_commons/layouts/default}" th:with="pageTitle=|View of identity ${identity.id}|">
+<body>
+<section layout:fragment="content">
+	<h1 class="py-5 text-center">Identity view</h1>
+	<table class="table table-bordered table-striped table-hover">
+		<caption>Identity view</caption>
+		<tbody>
+		<tr>
+			<th>ID</th>
+			<td th:text="${identity.id}">ID</td>
+		</tr>
+		<tr>
+			<th>Username</th>
+			<td th:text="${identity.username}">Username</td>
+		</tr>
+		<tr>
+			<th>Enabled</th>
+			<td>
+				<i th:class="'bi '+${identity.enabled ? 'bi-check-square-fill text-success-emphasis' : 'bi-x-octagon-fill text-danger-emphasis'}"></i>
+			</td>
+		</tr>
+		<tr>
+			<th>Email</th>
+			<td th:text="${identity.email}">Email</td>
+		</tr>
+		<tr>
+			<th>First name</th>
+			<td th:text="${identity.firstName}">First name</td>
+		</tr>
+		<tr>
+			<th>Last name</th>
+			<td th:text="${identity.lastName}">Last name</td>
+		</tr>
+		<tr>
+			<th>Roles</th>
+			<td th:text="${identity.roles}">[Roles]</td>
+		</tr>
+		</tbody>
+		<tfoot>
+		<tr>
+			<td colspan="2">
+				<div class="d-flex justify-content-end fs-2">
+					<div class="ms-3">
+						<a th:href="@{|/identities/update/${identity.id}|}" title="Update"><i class="bi bi-pencil-square"></i></a>
+					</div>
+					<div class="ms-3">
+						<a th:href="@{|/identities/delete/${identity.id}|}" title="Delete"><i class="bi bi-trash3"></i></a>
+					</div>
+				</div>
+			</td>
+		</tr>
+		</tfoot>
+	</table>
+	<div><a th:href="@{/identities}">Back to list</a></div>
+</section>
+</body>
+</html>

@@ -1,0 +1,9 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+		layout:decorate="~{_commons/layouts/default}" th:with="pageTitle='Home page'">
+<body>
+<section layout:fragment="content">
+	<h1 class="py-5 text-center"> Hello <span th:text="${currentUser?.nickname ?: 'Anonymous'}">username</span></h1>
+</section>
+</body>
+</html>

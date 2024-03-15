@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="en" class="h-100">
+<head th:replace="~{_commons/fragments/head :: defaultHead}" />
+<body class="d-flex flex-column h-100">
+<header th:fragment="defaultHeader">
+	<nav class="navbar navbar-expand-lg fixed-top bg-body-tertiary">
+		<div class="container">
+			<a th:href="@{/}" class="navbar-brand" th:text="${appName}">App name</a>
+			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse"
+					aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="collapse navbar-collapse" id="navbarCollapse">
+				<ul class="navbar-nav me-auto mb-2 mb-lg-0">
+					<!-- TODO: Show only allowed uris, see https://docs.spring.io/spring-security/site/docs/current/api/org/springframework/security/web/access/AuthorizationManagerWebInvocationPrivilegeEvaluator.html -->
+					<li class="nav-item"><a th:href="@{/identities}" class="nav-link">Identities</a></li>
+					<li class="nav-item"><a th:href="@{/actuator}" class="nav-link">Actuator</a></li>
+				</ul>
+				<div class="d-flex btn-group" sec:authorize="!isAuthenticated()">
+					<a th:href="@{/login}" class="btn btn-warning">Log in</a>
+				</div>
+				<div class="d-flex btn-group" sec:authorize="isAuthenticated()">
+					<button class="btn btn-success dropdown-toggle" type="button" data-bs-toggle="dropdown"
+							aria-expanded="false" th:text="${currentUser.nickname}">Name
+					</button>
+					<ul class="dropdown-menu dropdown-menu-lg-end w-100">
+						<li><h6 sec:authentication="name" class="dropdown-header">Username</h6></li>
+						<li>
+							<form th:action="@{/logout}" method="POST">
+								<button type="submit" class="dropdown-item">Log out</button>
+							</form>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</nav>
+</header>
+</body>
+</html>
