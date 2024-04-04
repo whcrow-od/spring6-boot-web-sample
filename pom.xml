@@ -17,6 +17,8 @@
 	<properties>
 		<!-- Spring Boot property for setting the source and the target java version -->
 		<java.version>21</java.version>
+		
+		<!-- «««««««««««««««««««« ARTIFACT VERSIONS »»»»»»»»»»»»»»»»»»»» -->
 		<spring-modulith.version>1.1.2</spring-modulith.version>
 		<mapstruct.version>1.5.5.Final</mapstruct.version>
 		<lombok-mapstruct-binding.version>0.2.0</lombok-mapstruct-binding.version>
@@ -24,13 +26,17 @@
 		<modelmapper.version>3.2.0</modelmapper.version>
 		<modelmapper-module-record.version>1.0.0</modelmapper-module-record.version>-->
 		<json-patch.version>1.13</json-patch.version>
+		<springdoc-openapi.version>2.5.0</springdoc-openapi.version>
 		<jacoco.version>0.8.11</jacoco.version>
+		
+		<!-- «««««««««««««««««««« CUSTOM PROPERTIES »»»»»»»»»»»»»»»»»»»» -->
 		<!-- Not recommended to set it to true because in this case surefire ignores the fact that some test fails.
 		But it can be convenient on occasion. -->
 		<surefire.generate-report-on-test-failure>false</surefire.generate-report-on-test-failure>
 	</properties>
 	
 	<dependencies>
+		<!-- «««««««««««««««««««« CORE »»»»»»»»»»»»»»»»»»»» -->
 		<dependency>
 			<groupId>org.springframework.modulith</groupId>
 			<artifactId>spring-modulith-starter-core</artifactId>
@@ -38,6 +44,10 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-aop</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -49,24 +59,67 @@
 		</dependency-->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-validation</artifactId>
+		</dependency>
+		
+		<!-- «««««««««««««««««««« SECURITY »»»»»»»»»»»»»»»»»»»» -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-security</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-oauth2-client</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-validation</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-aop</artifactId>
-		</dependency>
+		
+		<!-- «««««««««««««««««««« MVC TEMPLATING »»»»»»»»»»»»»»»»»»»» -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-thymeleaf</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.thymeleaf.extras</groupId>
+			<artifactId>thymeleaf-extras-springsecurity6</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>nz.net.ultraq.thymeleaf</groupId>
+			<artifactId>thymeleaf-layout-dialect</artifactId>
+		</dependency>
+		
+		<!-- «««««««««««««««««««« DATASOURCE »»»»»»»»»»»»»»»»»»»» -->
+		<dependency>
+			<groupId>com.mysql</groupId>
+			<artifactId>mysql-connector-j</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		
+		<!-- «««««««««««««««««««« COMMONS »»»»»»»»»»»»»»»»»»»» -->
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.mapstruct</groupId>
+			<artifactId>mapstruct</artifactId>
+			<version>${mapstruct.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.github.java-json-tools</groupId>
+			<artifactId>json-patch</artifactId>
+			<version>${json-patch.version}</version>
+		</dependency>
+		
+		<!-- «««««««««««««««««««« DEV TOOLS »»»»»»»»»»»»»»»»»»»» -->
 		<dependency>
 			<!-- Debug via /actuator endpoints -->
 			<groupId>org.springframework.boot</groupId>
@@ -90,45 +143,7 @@
 			<artifactId>spring-boot-devtools</artifactId>
 		</dependency-->
 		
-		<dependency>
-			<groupId>com.mysql</groupId>
-			<artifactId>mysql-connector-j</artifactId>
-			<scope>runtime</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.h2database</groupId>
-			<artifactId>h2</artifactId>
-			<scope>runtime</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.projectlombok</groupId>
-			<artifactId>lombok</artifactId>
-			<optional>true</optional>
-		</dependency>
-		<dependency>
-			<groupId>org.thymeleaf.extras</groupId>
-			<artifactId>thymeleaf-extras-springsecurity6</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>nz.net.ultraq.thymeleaf</groupId>
-			<artifactId>thymeleaf-layout-dialect</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-lang3</artifactId>
-		</dependency>
-		
-		<dependency>
-			<groupId>org.mapstruct</groupId>
-			<artifactId>mapstruct</artifactId>
-			<version>${mapstruct.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.github.java-json-tools</groupId>
-			<artifactId>json-patch</artifactId>
-			<version>${json-patch.version}</version>
-		</dependency>
-		
+		<!-- «««««««««««««««««««« NATIVE IMAGE »»»»»»»»»»»»»»»»»»»» -->
 		<dependency>
 			<!-- https://github.com/oracle/graalvm-reachability-metadata/
 			This repository enables users of GraalVM Native Image to share and reuse metadata for libraries and frameworks in the Java ecosystem. -->
@@ -139,6 +154,7 @@
 			<type>zip</type>
 		</dependency>
 		
+		<!-- «««««««««««««««««««« TESTS »»»»»»»»»»»»»»»»»»»» -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
@@ -210,6 +226,7 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<configuration>
+					<parameters>true</parameters>
 					<source>${java.version}</source>
 					<target>${java.version}</target>
 					<annotationProcessorPaths>
@@ -251,7 +268,7 @@
 				</configuration>
 			</plugin>
 			<plugin>
-				<!-- Try "mvn site" to create an HTML report about project (all dependencies, plugins, licenses etc).
+				<!-- Try "mvn site" to create an HTML report about project (all dependencies, plugins, licenses etc.).
 				See it at ${project.build.outputDirectory}/site/index.html -->
 				 <!-- According to the current configuration, plugin auto-creates HTML report about testing results
 				 during "test" phase (testing results generated by maven-surefire-plugin).
@@ -292,5 +309,5 @@
 			</plugin>
 		</plugins>
 	</build>
-
+	
 </project>
