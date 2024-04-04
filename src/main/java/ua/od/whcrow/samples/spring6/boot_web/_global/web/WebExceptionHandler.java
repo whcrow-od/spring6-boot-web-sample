@@ -35,6 +35,8 @@ import java.util.stream.Collectors;
 @ControllerAdvice
 class WebExceptionHandler extends ResponseEntityExceptionHandler {
 	
+	private static final String MSG_FORMAT = "{} caused by {}";
+	
 	private final String viewNamePrefix;
 	private final String defaultViewNameSuffix;
 	private final ViewProvider viewProvider;
@@ -59,7 +61,7 @@ class WebExceptionHandler extends ResponseEntityExceptionHandler {
 			logger.error(bodyModel.toString(), exception);
 			return;
 		}
-		logger.warn(bodyModel.toString()/*, exception*/);
+		logger.warn(Msg.format(MSG_FORMAT, bodyModel, exception));
 	}
 	
 	@Nonnull
