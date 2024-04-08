@@ -2,7 +2,7 @@ package ua.od.whcrow.samples.spring6.boot_web._global;
 
 import jakarta.annotation.Nonnull;
 import ua.od.whcrow.samples.spring6.boot_web._commons.exceptions.ConstantsClassInstantiationException;
-import ua.od.whcrow.samples.spring6.boot_web._commons.exceptions.InsufficientCodeException;
+import ua.od.whcrow.samples.spring6.boot_web._commons.exceptions.FaultyCodeException;
 import ua.od.whcrow.samples.spring6.boot_web._commons.util.ConstantsUtil;
 
 import java.lang.reflect.Field;
@@ -57,7 +57,7 @@ public enum Operation {
 		static void checkConstants() {
 			Collection<String> invalidConstants = getInvalidConstants();
 			if (!invalidConstants.isEmpty()) {
-				throw new InsufficientCodeException(
+				throw new FaultyCodeException(
 						"Following constants are invalid (name->value mismatch; not backed by enum): {}",
 						invalidConstants);
 			}
@@ -70,7 +70,7 @@ public enum Operation {
 	Operation(int id) {
 		this.id = id;
 		if (ConstantsUtil.getConstantFieldStream(Constants.class, true).noneMatch(f -> f.getName().equals(name()))) {
-			throw new InsufficientCodeException("Operation {} is not represented in constants", name());
+			throw new FaultyCodeException("Operation {} is not represented in constants", name());
 		}
 	}
 	

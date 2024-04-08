@@ -12,14 +12,10 @@ import ua.od.whcrow.samples.spring6.boot_web.identity.Identity;
 import java.util.UUID;
 
 record IdentityPersistDto(
-		@Null(groups = Create.class)
-		@NotNull(groups = Update.class)
-		UUID id,
 		
-		@Null(groups = Update.class)
-		@NotNull(groups = Create.class)
-		@NotBlank(groups = Create.class)
-		@Size(min = Identity.USERNAME_MIN_LENGTH, max = Identity.USERNAME_MAX_LENGTH, groups = Create.class)
+		@NotNull
+		@NotBlank
+		@Size(min = Identity.USERNAME_MIN_LENGTH, max = Identity.USERNAME_MAX_LENGTH)
 		String username,
 		
 		@NotNull
@@ -35,5 +31,8 @@ record IdentityPersistDto(
 		@NotNull
 		@NotBlank
 		@Size(max = Identity.LAST_NAME_MAX_LENGTH)
-		String lastName
+		String lastName,
+		
+		boolean enabled
+		
 ) {}

@@ -44,7 +44,7 @@ class WebSecurityConfig {
 			configureActuatorAccess(registry);
 			requestMappingMethodAccess.configure(registry);
 			registry.requestMatchers("/assets/**").permitAll()
-					.requestMatchers("/h2-console/**").permitAll()
+					.requestMatchers("/h2-console/**").hasAuthority(adminAuthority)
 					.anyRequest().authenticated();
 		});
 		// TODO: Support both auth methods - login page and HTTP basic auth

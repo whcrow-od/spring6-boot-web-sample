@@ -1,6 +1,8 @@
 package ua.od.whcrow.samples.spring6.boot_web.identity.persistence;
 
 import jakarta.annotation.Nonnull;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ua.od.whcrow.samples.spring6.boot_web._commons.util.Assert;
 import ua.od.whcrow.samples.spring6.boot_web.identity.Identity;
@@ -23,6 +25,12 @@ class IdentityServiceImpl implements IdentityService {
 	@Override
 	public List<Identity> findAll() {
 		return identityRepository.findAll();
+	}
+	
+	@Nonnull
+	@Override
+	public Page<Identity> findAll(@Nonnull Pageable pageable) {
+		return identityRepository.findAll(pageable);
 	}
 	
 	@Nonnull

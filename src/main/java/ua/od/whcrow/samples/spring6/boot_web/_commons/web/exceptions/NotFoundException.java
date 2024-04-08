@@ -18,6 +18,25 @@ public class NotFoundException extends StatusException {
 	}
 	
 	@Nonnull
+	public static NotFoundException ofAttributes(@Nonnull Class<?> searchForType, @Nonnull Object attributes,
+			@Nonnull Throwable cause) {
+		return new NotFoundException(MSG_MULTIPLE_ATTR, cause, searchForType.getSimpleName(), attributes);
+	}
+	
+	@Nonnull
+	public static NotFoundException ofAttribute(@Nonnull Class<?> searchForType, @Nonnull String attributeName,
+			@Nonnull Object attributeValue, @Nonnull Throwable cause) {
+		return new NotFoundException(MSG_SINGLE_ATTR, searchForType.getSimpleName(), attributeName, attributeValue,
+				cause);
+	}
+	
+	@Nonnull
+	public static NotFoundException ofId(@Nonnull Class<?> searchForType, @Nonnull Object searchForId,
+			@Nonnull Throwable cause) {
+		return ofAttribute(searchForType, "ID", searchForId, cause);
+	}
+	
+	@Nonnull
 	public static NotFoundException ofAttributes(@Nonnull Class<?> searchForType, @Nonnull Object attributes) {
 		return new NotFoundException(MSG_MULTIPLE_ATTR, searchForType.getSimpleName(), attributes);
 	}

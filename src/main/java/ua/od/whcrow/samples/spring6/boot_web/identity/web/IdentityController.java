@@ -25,17 +25,17 @@ class IdentityController {
 	private static final String ATTR_IDENTITY = "identity";
 	
 	private final IdentityService identityService;
-	private final IdentityDtoMapper identityDtoMapper;
+	private final IdentityMapper identityMapper;
 	
-	IdentityController(IdentityService identityService, IdentityDtoMapper identityDtoMapper) {
+	IdentityController(IdentityService identityService, IdentityMapper identityMapper) {
 		this.identityService = identityService;
-		this.identityDtoMapper = identityDtoMapper;
+		this.identityMapper = identityMapper;
 	}
 	
 	@AuthorityAccess(Operation.Constants.LIST_IDENTITY)
 	@GetMapping({"", "/"})
 	public String listIdentities(Model model) {
-		model.addAttribute(ATTR_IDENTITIES, identityDtoMapper.map(identityService.findAll()));
+		model.addAttribute(ATTR_IDENTITIES, identityMapper.map(identityService.findAll()));
 		return "identities/list";
 	}
 	
@@ -43,7 +43,7 @@ class IdentityController {
 	@GetMapping("/{id}")
 	public String viewIdentity(@PathVariable UUID id, Model model) {
 		Identity identity = identityService.findById(id).orElseThrow(() -> NotFoundException.ofId(Identity.class, id));
-		model.addAttribute(ATTR_IDENTITY, identityDtoMapper.map(identity));
+		model.addAttribute(ATTR_IDENTITY, identityMapper.map(identity));
 		return "identities/view";
 	}
 	

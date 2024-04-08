@@ -14,9 +14,8 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.ModelAndViewContainer;
 import org.springframework.web.servlet.mvc.method.annotation.RequestResponseBodyMethodProcessor;
 import ua.od.whcrow.samples.spring6.boot_web._commons.BeanFinder;
-import ua.od.whcrow.samples.spring6.boot_web._commons.mapping.FromOneUpdater;
-import ua.od.whcrow.samples.spring6.boot_web._commons.mapping.FromOneCreator;
 import ua.od.whcrow.samples.spring6.boot_web._commons.exceptions.EntityNotFoundException;
+import ua.od.whcrow.samples.spring6.boot_web._commons.mapping.ElectiveMappers;
 import ua.od.whcrow.samples.spring6.boot_web._commons.persistence.EntityMetaProvider;
 import ua.od.whcrow.samples.spring6.boot_web._commons.persistence.EntityProvider;
 import ua.od.whcrow.samples.spring6.boot_web._commons.web.exceptions.DetailedException;
@@ -32,13 +31,16 @@ import java.util.List;
 // TODO: What about auto-mapping from entity to DTO (for response body)
 public class BodyDtoAutoMapper extends RequestResponseBodyMethodProcessor {
 	
+	private final ElectiveMappers mappers;
 	private final BeanFinder beanFinder;
 	
-	public BodyDtoAutoMapper(@Nonnull List<HttpMessageConverter<?>> messageConverters, @Nonnull BeanFinder beanFinder) {
+	public BodyDtoAutoMapper(@Nonnull List<HttpMessageConverter<?>> messageConverters, ElectiveMappers mappers,
+			@Nonnull BeanFinder beanFinder) {
 		// TODO: Issue with ObjectMapper serialization of Java 8 Time objects started
 		//  when this call of super constructor with messageConverters was added.
 		//  Java 8 Time objects are serialized like JavaTimeModule is not registered.
 		super(messageConverters);
+		this.mappers = mappers;
 		this.beanFinder = beanFinder;
 	}
 	
@@ -59,7 +61,7 @@ public class BodyDtoAutoMapper extends RequestResponseBodyMethodProcessor {
 			throw new InternalServerErrorException("Failed to get the body DTO settings",
 					new DetailedException("Supported {} is not annotated with {}", parameter, BodyDto.class));
 		}
-		return super.readWithMessageConverters(inputMessage, parameter, bodyDTO.dtoType());
+		return super.readWithMessageConverters(inputMessage, parameter, bodyDTO.value());
 	}
 	
 	// By default, bean is validated only if the parameter is marked with @Valid or @Validated.
@@ -80,18 +82,16 @@ public class BodyDtoAutoMapper extends RequestResponseBodyMethodProcessor {
 		}
 		Object entityId = getEntityIdFromDto(parameter.getParameterType(), dto);
 		if (entityId == null) {
-			return beanFinder.getBean(FromOneCreator.class, dto.getClass(), parameter.getParameterType()).map(dto);
+			return mappers.create(dto, parameter.getParameterType());
 		}
 		Object entity;
 		try {
 			entity = beanFinder.getBean(EntityProvider.class, parameter.getParameterType(), entityId.getClass())
 					.getById(entityId);
 		} catch (EntityNotFoundException e) {
-			throw new NotFoundException("No such {} found", e, parameter.getParameterType().getSimpleName());
+			throw NotFoundException.ofId(parameter.getParameterType(), entityId, e);
 		}
-		beanFinder.getBean(FromOneUpdater.class, dto.getClass(), parameter.getParameterType())
-				.map(dto, entity);
-		return entity;
+		return mappers.update(dto, entity);
 	}
 	
 	@Nullable

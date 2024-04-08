@@ -6,15 +6,13 @@ import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 import org.springframework.security.core.GrantedAuthority;
 import ua.od.whcrow.samples.spring6.boot_web._commons.Ascii128;
-import ua.od.whcrow.samples.spring6.boot_web._global.mapping.MapStructFromOneCreator;
-import ua.od.whcrow.samples.spring6.boot_web._global.security.IdentityInfo;
 import ua.od.whcrow.samples.spring6.boot_web.identity.Identity;
 import ua.od.whcrow.samples.spring6.boot_web.identity.Role;
 
 import java.util.Collection;
 
 @Mapper
-abstract class IdentityInfoMapper implements MapStructFromOneCreator<Identity,IdentityInfo> {
+abstract class IdentityInfoMapper {
 	
 	@Mapping(target = "credentialsNonExpired", constant = "true")
 	@Mapping(target = "accountNonLocked", constant = "true")
@@ -22,9 +20,8 @@ abstract class IdentityInfoMapper implements MapStructFromOneCreator<Identity,Id
 	@Mapping(target = "authorities", source = "source", qualifiedByName = "persistedUserDetailsAuthorities")
 	@Mapping(target = "roles", source = "source", qualifiedByName = "persistedUserDetailsRoles")
 	@Mapping(target = "nickname", source = "source", qualifiedByName = "persistedUserDetailsNickname")
-	@Nonnull
-	@Override
-	public abstract IdentityInfoImpl map(@Nonnull Identity source);
+	
+	public abstract IdentityInfoImpl map(Identity source);
 	
 	@Named("persistedUserDetailsAuthorities")
 	protected Collection<? extends GrantedAuthority> mapAuthorities(@Nonnull Identity source) {

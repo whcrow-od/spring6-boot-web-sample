@@ -2,7 +2,7 @@ package ua.od.whcrow.samples.spring6.boot_web._commons.util;
 
 import jakarta.annotation.Nonnull;
 import org.apache.commons.lang3.function.ToBooleanBiFunction;
-import ua.od.whcrow.samples.spring6.boot_web._commons.exceptions.InsufficientCodeException;
+import ua.od.whcrow.samples.spring6.boot_web._commons.exceptions.FaultyCodeException;
 import ua.od.whcrow.samples.spring6.boot_web._commons.exceptions.UtilClassInstantiationException;
 
 import java.lang.reflect.Field;
@@ -33,7 +33,7 @@ public final class ConstantsUtil {
 			try {
 				return f.get(null);
 			} catch (IllegalAccessException e) {
-				throw new InsufficientCodeException(
+				throw new FaultyCodeException(
 						"Something wrong with constant fields collecting, only accessible fields must be obtained", e);
 			}
 		}));
