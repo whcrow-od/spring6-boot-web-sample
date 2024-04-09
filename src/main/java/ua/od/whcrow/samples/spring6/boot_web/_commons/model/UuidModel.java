@@ -17,7 +17,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @MappedSuperclass
-public abstract class UuidRevisionableEntity extends RevisionableEntity<UUID> {
+public abstract class UuidModel extends AbstractModel<UUID> {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.UUID)

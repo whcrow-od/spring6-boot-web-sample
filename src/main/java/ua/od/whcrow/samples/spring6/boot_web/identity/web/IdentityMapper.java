@@ -42,7 +42,7 @@ abstract class IdentityMapper implements CommonMappings, ElectiveMapper {
 	
 	public abstract IdentityProvideDto map(Identity source);
 	
-	public abstract void map(IdentityPersistDto source, @MappingTarget Identity target);
+	public abstract Identity map(IdentityPersistDto source, @MappingTarget Identity target);
 	
 	@Nonnull
 	protected Set<String> map(@Nonnull Set<Role> source) {

@@ -1,16 +1,16 @@
 package ua.od.whcrow.samples.spring6.boot_web.identity;
 
 import jakarta.annotation.Nonnull;
-import ua.od.whcrow.samples.spring6.boot_web._commons.persistence.EntityProvider;
+import ua.od.whcrow.samples.spring6.boot_web._commons.model.ModelService;
 
 import java.util.Optional;
 import java.util.UUID;
 
-public interface IdentityService extends EntityProvider<Identity,UUID> {
+public interface IdentityService extends ModelService<Identity,UUID> {
 	
 	@Nonnull
 	@Override
-	default Class<Identity> getEntityClass() {
+	default Class<Identity> getModelClass() {
 		return Identity.class;
 	}
 	
@@ -22,8 +22,5 @@ public interface IdentityService extends EntityProvider<Identity,UUID> {
 	
 	@Nonnull
 	Optional<Identity> findByUsername(@Nonnull String username);
-	
-	@Nonnull
-	Identity save(@Nonnull Identity identity);
 	
 }

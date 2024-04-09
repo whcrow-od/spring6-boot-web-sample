@@ -73,11 +73,11 @@ public abstract class Stringable implements Serializable {
 	}
 	
 	/**
-	 * Collects info only from the public getter methods that match the following conditions:<br/><ul><li>method is NOT
+	 * Collects info only from the public getter methods that match the following conditions:<ul><li>method is NOT
 	 * annotated with {@link Ignore}</li><li>method's return type is NOT annotated with {@link Ignore}</li><li>method's
 	 * return type is NOT representing an entity</li><li>method's return type is NOT a parameterized type that contains
-	 * an argument of type representing an entity</li><li>return type is NOT a parameterized type that contains an
-	 * argument of non-resolved type</ul>This prevents initializing of lazy-loaded properties and crawling across the
+	 * an argument of type representing an entity</li><li>method's return type is NOT a parameterized type that contains
+	 * an argument of non-resolved type</ul>This prevents initializing of lazy-loaded properties and crawling across the
 	 * circular references (bidirectional relations etc.)
 	 */
 	@SneakyThrows

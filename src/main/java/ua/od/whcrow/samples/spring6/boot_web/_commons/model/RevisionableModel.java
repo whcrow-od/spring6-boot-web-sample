@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Getter
 @MappedSuperclass
-public abstract class RevisionableEntity<T> extends AbstractEntity<T> {
+public abstract class RevisionableModel<T> extends AbstractModel<T> {
 	
 	@Version
 	@Column(name = "revision")

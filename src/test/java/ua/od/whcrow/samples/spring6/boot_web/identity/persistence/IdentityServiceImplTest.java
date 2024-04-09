@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import ua.od.whcrow.samples.spring6.boot_web.ApplicationTest;
-import ua.od.whcrow.samples.spring6.boot_web._commons.persistence.EntityProvider;
+import ua.od.whcrow.samples.spring6.boot_web._commons.model.ModelService;
 import ua.od.whcrow.samples.spring6.boot_web.identity.Identity;
 import ua.od.whcrow.samples.spring6.boot_web.identity.IdentityService;
 
@@ -27,7 +27,7 @@ class IdentityServiceImplTest {
 	private IdentityServiceImpl identityServiceImpl;
 	
 	@Autowired
-	private EntityProvider<Identity,UUID> entityProvider;
+	private ModelService<Identity,UUID> modelService;
 	
 	@Autowired
 	private IdentityService identityService;
@@ -37,7 +37,7 @@ class IdentityServiceImplTest {
 	
 	@Test
 	void checkWhetherIdentityEntityProviderIsSubject() {
-		assertEquals(identityServiceImpl, entityProvider);
+		assertEquals(identityServiceImpl, modelService);
 	}
 	
 	@Test

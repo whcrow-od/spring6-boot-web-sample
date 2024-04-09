@@ -14,10 +14,10 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.ModelAndViewContainer;
 import org.springframework.web.servlet.mvc.method.annotation.RequestResponseBodyMethodProcessor;
 import ua.od.whcrow.samples.spring6.boot_web._commons.BeanFinder;
-import ua.od.whcrow.samples.spring6.boot_web._commons.exceptions.EntityNotFoundException;
+import ua.od.whcrow.samples.spring6.boot_web._commons.model.exceptions.ModelNotFoundException;
 import ua.od.whcrow.samples.spring6.boot_web._commons.mapping.ElectiveMappers;
 import ua.od.whcrow.samples.spring6.boot_web._commons.persistence.EntityMetaProvider;
-import ua.od.whcrow.samples.spring6.boot_web._commons.persistence.EntityProvider;
+import ua.od.whcrow.samples.spring6.boot_web._commons.model.ModelService;
 import ua.od.whcrow.samples.spring6.boot_web._commons.web.exceptions.DetailedException;
 import ua.od.whcrow.samples.spring6.boot_web._commons.web.exceptions.InternalServerErrorException;
 import ua.od.whcrow.samples.spring6.boot_web._commons.web.exceptions.NotFoundException;
@@ -28,7 +28,7 @@ import java.lang.reflect.InaccessibleObjectException;
 import java.lang.reflect.Type;
 import java.util.List;
 
-// TODO: What about auto-mapping from entity to DTO (for response body)
+// TODO: What about auto-mapping from model to DTO (for response body)
 public class BodyDtoAutoMapper extends RequestResponseBodyMethodProcessor {
 	
 	private final ElectiveMappers mappers;
@@ -80,23 +80,22 @@ public class BodyDtoAutoMapper extends RequestResponseBodyMethodProcessor {
 		if (dto == null) {
 			return null;
 		}
-		Object entityId = getEntityIdFromDto(parameter.getParameterType(), dto);
-		if (entityId == null) {
+		Object id = getId(parameter.getParameterType(), dto);
+		if (id == null) {
 			return mappers.create(dto, parameter.getParameterType());
 		}
-		Object entity;
+		Object model;
 		try {
-			entity = beanFinder.getBean(EntityProvider.class, parameter.getParameterType(), entityId.getClass())
-					.getById(entityId);
-		} catch (EntityNotFoundException e) {
-			throw NotFoundException.ofId(parameter.getParameterType(), entityId, e);
+			model = beanFinder.getBean(ModelService.class, parameter.getParameterType(), id.getClass()).getById(id);
+		} catch (ModelNotFoundException e) {
+			throw NotFoundException.ofId(parameter.getParameterType(), id, e);
 		}
-		return mappers.update(dto, entity);
+		return mappers.update(dto, model);
 	}
 	
 	@Nullable
-	private Object getEntityIdFromDto(@Nonnull Class<?> entityType, @Nonnull Object dto) {
-		String idAttributeName = beanFinder.getBean(EntityMetaProvider.class, entityType)
+	private Object getId(@Nonnull Class<?> modelType, @Nonnull Object dto) {
+		String idAttributeName = beanFinder.getBean(EntityMetaProvider.class, modelType)
 				.getIdAttributeMeta().getName();
 		// Cannot use BeanInfo to call a getter method because DTO can be a record, and the records are not bean-like.
 		Field dtoIdField = ReflectionUtils.findField(dto.getClass(), f -> f.getName().equals(idAttributeName));

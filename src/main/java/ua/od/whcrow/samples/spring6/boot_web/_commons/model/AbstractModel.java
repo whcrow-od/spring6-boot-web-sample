@@ -9,9 +9,7 @@ import ua.od.whcrow.samples.spring6.boot_web._commons.persistence.Stringable;
 import java.util.Objects;
 
 @NoArgsConstructor
-public abstract class AbstractEntity<T> extends Stringable {
-	
-	public abstract T getId();
+public abstract class AbstractModel<ID> extends Stringable implements Model<ID> {
 	
 	@Stringable.Ignore
 	@Transient
@@ -33,7 +31,7 @@ public abstract class AbstractEntity<T> extends Stringable {
 		if (_getEffectiveType() != EntityUtils.getEntityType(obj)) {
 			return false;
 		}
-		return Objects.equals(getId(), ((AbstractEntity<?>) obj).getId());
+		return Objects.equals(getId(), ((AbstractModel<?>) obj).getId());
 	}
 	
 	@Override
