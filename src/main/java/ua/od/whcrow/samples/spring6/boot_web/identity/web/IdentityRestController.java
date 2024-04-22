@@ -12,8 +12,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import ua.od.whcrow.samples.spring6.boot_web._commons.model.exceptions.ModelNotFoundException;
 import ua.od.whcrow.samples.spring6.boot_web._commons.security.AuthorityAccess;
-import ua.od.whcrow.samples.spring6.boot_web._commons.web.ModelHelper;
+import ua.od.whcrow.samples.spring6.boot_web._commons.web.DPShortcut;
 import ua.od.whcrow.samples.spring6.boot_web._global.Operation;
 import ua.od.whcrow.samples.spring6.boot_web.identity.IdentityConstants;
 import ua.od.whcrow.samples.spring6.boot_web.identity.IdentityService;
@@ -37,25 +38,21 @@ class IdentityRestController {
 	@AuthorityAccess(Operation.Constants.CREATE_IDENTITY)
 	@ResponseStatus(HttpStatus.CREATED)
 	public IdentityProvideDto createIdentity(@RequestBody IdentityPersistDto dto) {
-		return ModelHelper.create(dto, mapper::map, service, mapper::map);
+		return DPShortcut.create(dto, mapper::map, service::save, mapper::map);
 	}
-	
-	/*@PostMapping
-	@AuthorityAccess(Operation.Constants.CREATE_IDENTITY)
-	public ResponseEntity<Object> createIdentity(@RequestBody IdentityPersistDto dto) {
-		return EntityHelper.create(dto, mapper::map, service);
-	}*/
 	
 	@GetMapping("/{id}")
 	@AuthorityAccess(Operation.Constants.READ_IDENTITY)
-	public IdentityProvideDto getIdentity(@PathVariable UUID id) {
-		return ModelHelper.getById(service, id, mapper::map);
+	public IdentityProvideDto getIdentity(@PathVariable UUID id)
+			throws ModelNotFoundException {
+		return DPShortcut.read(id, service::getById, mapper::map);
 	}
 	
 	@PostMapping("/{id}")
 	@AuthorityAccess(Operation.Constants.UPDATE_IDENTITY)
-	public IdentityProvideDto updateIdentity(@PathVariable UUID id, @RequestBody IdentityPersistDto dto) {
-		return ModelHelper.update(service, id, dto, mapper::map, mapper::map);
+	public IdentityProvideDto updateIdentity(@PathVariable UUID id, @RequestBody IdentityPersistDto dto)
+			throws ModelNotFoundException {
+		return DPShortcut.update(id, service::getById, dto, mapper::map, service::save, mapper::map);
 	}
 	
 	@GetMapping
@@ -63,5 +60,11 @@ class IdentityRestController {
 	public Page<IdentityProvideDto> listIdentities(@ParameterObject Pageable pageable) {
 		return service.findAll(pageable).map(mapper::map);
 	}
+	
+	/*@GetMapping
+	@AuthorityAccess(Operation.Constants.LIST_IDENTITY)
+	public List<IdentityProvideDto> listIdentities() {
+		return ModelUtils.read(service::findAll, mapper::map);
+	}*/
 	
 }

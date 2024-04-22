@@ -19,11 +19,13 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+import ua.od.whcrow.samples.spring6.boot_web._commons.model.exceptions.ModelNotFoundException;
 import ua.od.whcrow.samples.spring6.boot_web._commons.util.Msg;
 import ua.od.whcrow.samples.spring6.boot_web._commons.web.BodyModel;
 import ua.od.whcrow.samples.spring6.boot_web._commons.web.BodyModelResponse;
 import ua.od.whcrow.samples.spring6.boot_web._commons.web.ViewProvider;
 import ua.od.whcrow.samples.spring6.boot_web._commons.web.WebUtils;
+import ua.od.whcrow.samples.spring6.boot_web._commons.web.exceptions.NotFoundException;
 import ua.od.whcrow.samples.spring6.boot_web._commons.web.exceptions.ParameterException;
 import ua.od.whcrow.samples.spring6.boot_web._commons.web.exceptions.StatusException;
 import ua.od.whcrow.samples.spring6.boot_web._commons.web.exceptions.UnprocessableEntityException;
@@ -108,6 +110,12 @@ class WebExceptionHandler extends ResponseEntityExceptionHandler {
 	public Object handleException(StatusException exception, HttpServletRequest request) {
 		return isApiRequest(request) ? buildBodyModelResponse(exception, request)
 				: buildModelAndView(exception, request);
+	}
+	
+	@ExceptionHandler
+	public Object handleException(ModelNotFoundException exception, HttpServletRequest request) {
+		return handleException(NotFoundException.ofAttributes(exception.getModelType(), exception.getAttributes()),
+				request);
 	}
 	
 	@ExceptionHandler

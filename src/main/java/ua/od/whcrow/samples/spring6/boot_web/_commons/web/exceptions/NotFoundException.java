@@ -1,6 +1,7 @@
 package ua.od.whcrow.samples.spring6.boot_web._commons.web.exceptions;
 
 import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import org.springframework.http.HttpStatus;
 
 public class NotFoundException extends StatusException {
@@ -37,7 +38,7 @@ public class NotFoundException extends StatusException {
 	}
 	
 	@Nonnull
-	public static NotFoundException ofAttributes(@Nonnull Class<?> searchForType, @Nonnull Object attributes) {
+	public static NotFoundException ofAttributes(@Nonnull Class<?> searchForType, @Nullable Object attributes) {
 		return new NotFoundException(MSG_MULTIPLE_ATTR, searchForType.getSimpleName(), attributes);
 	}
 	
