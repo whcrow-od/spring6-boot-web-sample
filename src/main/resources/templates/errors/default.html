@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-		layout:decorate="~{_commons/layouts/default}" th:with="pageTitle=|${error.statusCode.value} ${error.statusCode.reasonPhrase}|">
+		layout:decorate="~{_commons/layouts/default}" th:with="pageTitle=|${error.status.value} ${error.status.reasonPhrase}|">
 <body>
 <section layout:fragment="content">
-	<h1 class="py-5 text-center" th:text="|${error.statusCode.value} ${error.statusCode.reasonPhrase}|">Error status</h1>
+	<h1 class="py-5 text-center" th:text="|${error.status.value} ${error.status.reasonPhrase}|">Error status</h1>
 	<div th:text="${error.details}" class="text-center">Details</div>
 	<div th:text="${error.payload}" class="text-center">Payload</div>
 </section>
