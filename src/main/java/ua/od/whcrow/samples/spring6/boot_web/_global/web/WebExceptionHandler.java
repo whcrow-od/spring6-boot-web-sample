@@ -59,7 +59,7 @@ class WebExceptionHandler extends ResponseEntityExceptionHandler {
 	}
 	
 	private void log(@Nonnull BodyModel<?> bodyModel, @Nonnull Exception exception) {
-		if (bodyModel.getStatusCode().is5xxServerError()) {
+		if (bodyModel.getStatus().is5xxServerError()) {
 			logger.error(bodyModel.toString(), exception);
 			return;
 		}
@@ -79,7 +79,7 @@ class WebExceptionHandler extends ResponseEntityExceptionHandler {
 		} else if (exception instanceof UnprocessableEntityException unprocessableEntityException) {
 			payload = unprocessableEntityException.getParameters();
 		}
-		BodyModel<?> bodyModel = new BodyModel<>(request, exception.getStatusCode(), payload, exception.getMessage());
+		BodyModel<?> bodyModel = new BodyModel<>(request, exception.getStatus(), payload, exception.getMessage());
 		log(bodyModel, exception);
 		return bodyModel;
 	}
@@ -100,7 +100,7 @@ class WebExceptionHandler extends ResponseEntityExceptionHandler {
 		} else {
 			modelAndView.setView(errorView);
 		}
-		modelAndView.setStatus(bodyModel.getStatusCode());
+		modelAndView.setStatus(bodyModel.getStatus());
 		webMvcControllerAdvice.addAttributes(modelAndView.getModel()::put, request);
 		modelAndView.getModel().put(WebConstants.MA_N_ERROR, bodyModel);
 		return modelAndView;

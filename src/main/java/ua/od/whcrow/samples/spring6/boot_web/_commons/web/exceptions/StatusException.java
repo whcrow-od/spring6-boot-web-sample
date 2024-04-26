@@ -20,6 +20,11 @@ public class StatusException extends ResponseStatusException implements PublicMe
 	}
 	
 	@Nonnull
+	public HttpStatus getStatus() {
+		return (HttpStatus) getStatusCode();
+	}
+	
+	@Nonnull
 	@Override
 	public String getMessage() {
 		return getReason();
