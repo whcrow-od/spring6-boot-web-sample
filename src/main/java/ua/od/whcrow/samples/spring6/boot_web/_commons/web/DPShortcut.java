@@ -1,11 +1,16 @@
 package ua.od.whcrow.samples.spring6.boot_web._commons.web;
 
 import jakarta.annotation.Nonnull;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ua.od.whcrow.samples.spring6.boot_web._commons.exceptions.UtilClassInstantiationException;
 import ua.od.whcrow.samples.spring6.boot_web._commons.functions.x.BiFunctionX;
 import ua.od.whcrow.samples.spring6.boot_web._commons.functions.x.FunctionX;
 import ua.od.whcrow.samples.spring6.boot_web._commons.functions.x.SupplierX;
+import ua.od.whcrow.samples.spring6.boot_web._commons.model.Model;
 import ua.od.whcrow.samples.spring6.boot_web._commons.util.Morpher;
+
+import java.net.URI;
 
 /**
  * Data processing shortcuts are designed to simplify common data flow in controller methods, e.g. creating of new
@@ -28,6 +33,19 @@ public final class DPShortcut {
 				.morph(saver)
 				.morph(mapper)
 				.result();
+	}
+	
+	@Nonnull
+	public static <IA, M extends Model<?>, IX extends Throwable, SX extends Throwable, R, MX extends Throwable> ResponseEntity<Object> create(
+			@Nonnull IA initializerArg, @Nonnull FunctionX<IA,M,IX> initializer, @Nonnull FunctionX<M,M,SX> saver)
+			throws IX, SX, MX {
+		return create(initializerArg, initializer, saver, saved -> {
+			URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+					.path("/{id}")
+					.buildAndExpand(saved.getId())
+					.toUri();
+			return ResponseEntity.created(location).build();
+		});
 	}
 	
 	@Nonnull

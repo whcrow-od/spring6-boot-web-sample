@@ -3,6 +3,7 @@ package ua.od.whcrow.samples.spring6.boot_web.identity.web.rest;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,7 +12,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ua.od.whcrow.samples.spring6.boot_web._commons.model.exceptions.ModelNotFoundException;
 import ua.od.whcrow.samples.spring6.boot_web._commons.security.AuthorityAccess;
 import ua.od.whcrow.samples.spring6.boot_web._commons.web.DPShortcut;
@@ -19,7 +19,6 @@ import ua.od.whcrow.samples.spring6.boot_web._global.Operation;
 import ua.od.whcrow.samples.spring6.boot_web.identity.IdentityConstants;
 import ua.od.whcrow.samples.spring6.boot_web.identity.IdentityService;
 
-import java.net.URI;
 import java.util.UUID;
 
 @RestController
@@ -38,13 +37,7 @@ class IdentityRestController {
 	@PostMapping
 	@AuthorityAccess(Operation.Constants.CREATE_IDENTITY)
 	public ResponseEntity<Object> createIdentity(@RequestBody IdentityDto dto) {
-		return DPShortcut.create(dto, mapper::mapToIdentity, service::save, saved -> {
-			URI location = ServletUriComponentsBuilder.fromCurrentRequest()
-					.path("/{id}")
-					.buildAndExpand(saved.getId())
-					.toUri();
-			return ResponseEntity.created(location).build();
-		});
+		return DPShortcut.create(dto, mapper::mapToIdentity, service::save);
 	}
 	
 	@GetMapping("/{id}")
