@@ -10,6 +10,8 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.context.request.WebRequest;
+import ua.od.whcrow.samples.spring6.boot_web._commons.web.WebUtils;
 
 import java.time.ZonedDateTime;
 import java.util.function.BiConsumer;
@@ -23,6 +25,10 @@ class WebMvcControllerAdvice {
 	@InitBinder
 	public void initBinder(@Nonnull WebDataBinder dataBinder) {
 		dataBinder.registerCustomEditor(String.class, new StringTrimmerEditor(false));
+	}
+	
+	public void addAttributes(@Nonnull BiConsumer<String,Object> attributeAdder, @Nonnull WebRequest request) {
+		addAttributes(attributeAdder, WebUtils.getHttpServletRequest(request));
 	}
 	
 	public void addAttributes(@Nonnull BiConsumer<String,Object> attributeAdder, @Nonnull HttpServletRequest request) {

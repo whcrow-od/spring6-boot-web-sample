@@ -42,6 +42,7 @@ public final class Msg {
 		return o.toString();
 	}
 	
+	// FIXME: Msg.format("{} not found", "Identity") => "Identity" instead of "Identity not found"
 	@Nonnull
 	public static String format(@Nonnull Function<Object,String> stringifier, @Nonnull String delimiter,
 			@Nonnull String msg, Object... args) {

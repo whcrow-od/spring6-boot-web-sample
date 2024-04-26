@@ -4,6 +4,7 @@ import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 
 import java.util.Collections;
+import java.util.Map;
 
 public class ModelNotFoundException extends ModelException {
 	
@@ -11,18 +12,24 @@ public class ModelNotFoundException extends ModelException {
 	private static final String MSG_NO_ATTR = "Model {} is not found";
 	
 	private final Class<?> modelType;
-	private final Object attributes;
+	private final Map<String,Object> attributes;
 	
-	public ModelNotFoundException(@Nonnull Class<?> modelType, @Nullable Object attributes) {
-		super(attributes == null ? MSG_NO_ATTR : MSG_WITH_ATTR, modelType, attributes);
+	public ModelNotFoundException(@Nonnull Class<?> modelType, @Nullable Map<String,Object> attributes) {
+		super(attributes == null ? MSG_NO_ATTR : MSG_WITH_ATTR, modelType.getName(), attributes);
 		this.modelType = modelType;
-		this.attributes = attributes;
+		this.attributes = wrapAttributes(attributes);
 	}
 	
-	public ModelNotFoundException(@Nonnull Class<?> modelType, @Nullable Object attributes, @Nonnull Throwable cause) {
-		super(attributes == null ? MSG_NO_ATTR : MSG_WITH_ATTR, cause, modelType, attributes);
+	public ModelNotFoundException(@Nonnull Class<?> modelType, @Nullable Map<String,Object> attributes,
+			@Nonnull Throwable cause) {
+		super(attributes == null ? MSG_NO_ATTR : MSG_WITH_ATTR, cause, modelType.getName(), attributes);
 		this.modelType = modelType;
-		this.attributes = attributes;
+		this.attributes = wrapAttributes(attributes);
+	}
+	
+	@Nullable
+	private static Map<String,Object> wrapAttributes(@Nullable Map<String,Object> attributes) {
+		return attributes == null ? null : Collections.unmodifiableMap(attributes);
 	}
 	
 	public ModelNotFoundException(@Nonnull Class<?> modelType, @Nonnull String attributeName,
@@ -52,7 +59,7 @@ public class ModelNotFoundException extends ModelException {
 	}
 	
 	@Nullable
-	public Object getAttributes() {
+	public Map<String,Object> getAttributes() {
 		return attributes;
 	}
 	

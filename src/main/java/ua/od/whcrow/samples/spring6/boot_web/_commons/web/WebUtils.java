@@ -1,9 +1,7 @@
 package ua.od.whcrow.samples.spring6.boot_web._commons.web;
 
 import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -52,24 +50,36 @@ public final class WebUtils {
 		return getServletRequestAttributes(request).getRequest();
 	}
 	
-	@Nullable
-	public static HttpServletResponse getHttpServletResponse(@Nonnull WebRequest request) {
-		return getServletRequestAttributes(request).getResponse();
-	}
-	
-	public static boolean isResponseCommitted(@Nonnull WebRequest request) {
-		HttpServletResponse response = getHttpServletResponse(request);
-		return response != null && response.isCommitted();
-	}
-	
-	public static boolean isApiRequest(@Nonnull HttpServletRequest request) {
-		Enumeration<String> acceptTypes = request.getHeaders(HttpHeaders.ACCEPT);
+	private static boolean accepts(@Nonnull Enumeration<String> acceptTypes, @Nonnull String mediaType) {
 		while (acceptTypes.hasMoreElements()) {
-			if (API_MEDIA_TYPES.contains(acceptTypes.nextElement())) {
+			String acceptType = acceptTypes.nextElement();
+			if (acceptType.equals(mediaType)) {
 				return true;
 			}
 		}
 		return false;
+	}
+	
+	private static boolean isHtmlRequested(@Nonnull Enumeration<String> acceptTypes) {
+		return accepts(acceptTypes, MediaType.TEXT_HTML_VALUE);
+	}
+	
+	public static boolean isResponseEntityRequested(@Nonnull HttpServletRequest request) {
+		Assert.notNull(request, "request");
+		Enumeration<String> acceptTypes = request.getHeaders(HttpHeaders.ACCEPT);
+		return !isHtmlRequested(acceptTypes)
+				&& API_MEDIA_TYPES.stream().anyMatch(acceptType -> accepts(acceptTypes, acceptType));
+	}
+	
+	public static boolean isApiPathRequested(@Nonnull HttpServletRequest request, @Nonnull String apiPath) {
+		Assert.notNull(request, "request");
+		Assert.notNull(apiPath, "apiPath");
+		return apiPath.endsWith("/") ? request.getRequestURI().startsWith(apiPath)
+				: request.getRequestURI().equals(apiPath);
+	}
+	
+	public static boolean isApiRequest(@Nonnull HttpServletRequest request, @Nonnull String apiPath) {
+		return isApiPathRequested(request, apiPath) || isResponseEntityRequested(request);
 	}
 	
 }

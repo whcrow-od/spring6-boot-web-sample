@@ -1,11 +1,22 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-		layout:decorate="~{_commons/layouts/default}" th:with="pageTitle=|${error.status.value} ${error.status.reasonPhrase}|">
+		layout:decorate="~{_commons/layouts/default}" th:with="pageTitle=|${error.status} ${error.title}|">
 <body>
 <section layout:fragment="content">
-	<h1 class="py-5 text-center" th:text="|${error.status.value} ${error.status.reasonPhrase}|">Error status</h1>
-	<div th:text="${error.details}" class="text-center">Details</div>
-	<div th:text="${error.payload}" class="text-center">Payload</div>
+	<h1 class="py-5 text-center" th:text="|${error.status} ${error.title}|">Error status</h1>
+	<table class="table table-bordered table-striped table-hover">
+		<thead>
+		<tr>
+			<th th:text="${error.detail}" colspan="2">Error detail</th>
+		</tr>
+		</thead>
+		<tbody th:if="${error.properties}">
+		<tr th:each="entry: ${error.properties}">
+			<td th:text="${entry.key}"></td>
+			<td th:text="${entry.value}"></td>
+		</tr>
+		</tbody>
+	</table>
 </section>
 </body>
 </html>

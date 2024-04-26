@@ -1,12 +1,25 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-		layout:decorate="~{_commons/layouts/default}" th:with="pageTitle=|${error.status.value} ${error.status.reasonPhrase}|">
+		layout:decorate="~{_commons/layouts/default}" th:with="pageTitle=|${error.status} ${error.title}|">
 <body>
 <section layout:fragment="content">
 	<h1 class="py-5 text-center">Oops!!!</h1>
 	<div class="text-center">
-		<img th:src="@{/assets/images/errors/500.png}" class="img-fluid" th:alt="|${error.status.value} ${error.status.reasonPhrase}|" />
+		<img th:src="@{/assets/images/errors/500.png}" class="img-fluid" th:alt="|${error.status} ${error.title}|" />
 	</div>
+	<table class="table table-bordered table-striped table-hover">
+		<thead>
+		<tr>
+			<th th:text="${error.detail}" colspan="2">Error detail</th>
+		</tr>
+		</thead>
+		<tbody th:if="${error.properties}">
+		<tr th:each="entry: ${error.properties}">
+			<td th:text="${entry.key}"></td>
+			<td th:text="${entry.value}"></td>
+		</tr>
+		</tbody>
+	</table>
 </section>
 </body>
 </html>

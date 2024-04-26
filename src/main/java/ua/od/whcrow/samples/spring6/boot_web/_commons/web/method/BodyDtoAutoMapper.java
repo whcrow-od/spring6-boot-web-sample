@@ -14,13 +14,11 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.ModelAndViewContainer;
 import org.springframework.web.servlet.mvc.method.annotation.RequestResponseBodyMethodProcessor;
 import ua.od.whcrow.samples.spring6.boot_web._commons.BeanFinder;
-import ua.od.whcrow.samples.spring6.boot_web._commons.model.exceptions.ModelNotFoundException;
 import ua.od.whcrow.samples.spring6.boot_web._commons.mapping.ElectiveMappers;
-import ua.od.whcrow.samples.spring6.boot_web._commons.persistence.EntityMetaProvider;
 import ua.od.whcrow.samples.spring6.boot_web._commons.model.ModelService;
+import ua.od.whcrow.samples.spring6.boot_web._commons.persistence.EntityMetaProvider;
 import ua.od.whcrow.samples.spring6.boot_web._commons.web.exceptions.DetailedException;
 import ua.od.whcrow.samples.spring6.boot_web._commons.web.exceptions.InternalServerErrorException;
-import ua.od.whcrow.samples.spring6.boot_web._commons.web.exceptions.NotFoundException;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -84,12 +82,7 @@ public class BodyDtoAutoMapper extends RequestResponseBodyMethodProcessor {
 		if (id == null) {
 			return mappers.create(dto, parameter.getParameterType());
 		}
-		Object model;
-		try {
-			model = beanFinder.getBean(ModelService.class, parameter.getParameterType(), id.getClass()).getById(id);
-		} catch (ModelNotFoundException e) {
-			throw NotFoundException.ofId(parameter.getParameterType(), id, e);
-		}
+		Object model = beanFinder.getBean(ModelService.class, parameter.getParameterType(), id.getClass()).getById(id);
 		return mappers.update(dto, model);
 	}
 	

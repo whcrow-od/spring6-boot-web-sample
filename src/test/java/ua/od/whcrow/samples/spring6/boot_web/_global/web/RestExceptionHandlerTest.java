@@ -7,23 +7,22 @@ import ua.od.whcrow.samples.spring6.boot_web.ApplicationTest;
 import ua.od.whcrow.samples.spring6.boot_web._commons.util.Msg;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ApplicationTest
-class WebBodyModelResponseEntityExceptionHandlerTest {
+class RestExceptionHandlerTest {
 	
 	@Autowired
 	private ResponseEntityExceptionHandler responseEntityExceptionHandler;
 	
 	@Autowired
-	private WebExceptionHandler handler;
+	private RestExceptionHandler handler;
 	
 	@Test
 	void checkWhetherResponseEntityExceptionHandlerIsSubject() {
 		assertEquals(responseEntityExceptionHandler, handler,
 				() -> Msg.format("Autowired {} must be equal to autowired {}",
 						ResponseEntityExceptionHandler.class.getSimpleName(),
-						WebExceptionHandler.class.getName()));
+						RestExceptionHandler.class.getName()));
 	}
 	
 	/*@Nested
