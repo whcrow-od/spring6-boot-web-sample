@@ -14,6 +14,6 @@ import java.lang.annotation.Target;
 public @interface ApplicationTest {
 	
 	@AliasFor(annotation = SpringBootTest.class, attribute = "classes")
-	Class<?>[] contextLoaders() default {Application.class, PersistedEntityMockProvider.class};
+	Class<?>[] contextLoaders() default {Application.class, PersistedModelMockProvider.class};
 	
 }

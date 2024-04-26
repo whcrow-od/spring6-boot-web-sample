@@ -21,7 +21,7 @@ class WebBodyModelResponseEntityExceptionHandlerTest {
 	@Test
 	void checkWhetherResponseEntityExceptionHandlerIsSubject() {
 		assertEquals(responseEntityExceptionHandler, handler,
-				() -> Msg.format("Autowired {} must be equals to autowired {}",
+				() -> Msg.format("Autowired {} must be equal to autowired {}",
 						ResponseEntityExceptionHandler.class.getSimpleName(),
 						WebExceptionHandler.class.getName()));
 	}

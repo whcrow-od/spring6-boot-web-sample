@@ -1,5 +1,6 @@
 package ua.od.whcrow.samples.spring6.boot_web;
 
+import jakarta.annotation.Nonnull;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Bean;
@@ -14,7 +15,7 @@ import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
 @Configuration
-public class PersistedEntityMockProvider {
+public class PersistedModelMockProvider {
 	
 	private static final int MIN_IN_DAY = 1440;
 	
@@ -58,6 +59,7 @@ public class PersistedEntityMockProvider {
 		return identity;
 	}
 	
+	@Nonnull
 	private String buildIdentityUsername() {
 		return RandomStringUtils.randomAscii(Identity.USERNAME_MIN_LENGTH, Identity.USERNAME_MAX_LENGTH);
 	}
