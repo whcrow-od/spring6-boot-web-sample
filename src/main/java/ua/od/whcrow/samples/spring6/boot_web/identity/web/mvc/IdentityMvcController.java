@@ -1,4 +1,4 @@
-package ua.od.whcrow.samples.spring6.boot_web.identity.web;
+package ua.od.whcrow.samples.spring6.boot_web.identity.web.mvc;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,15 +19,15 @@ import java.util.UUID;
 @GeneralAccess(GeneralAccessType.AUTHENTICATED)
 @RequestMapping(IdentityConstants.REQ_P_IDENTITIES)
 @Controller
-class IdentityController {
+class IdentityMvcController {
 	
 	private static final String ATTR_IDENTITIES = "identities";
 	private static final String ATTR_IDENTITY = "identity";
 	
 	private final IdentityService service;
-	private final IdentityMapper mapper;
+	private final IdentityMvcMapper mapper;
 	
-	IdentityController(IdentityService service, IdentityMapper mapper) {
+	IdentityMvcController(IdentityService service, IdentityMvcMapper mapper) {
 		this.service = service;
 		this.mapper = mapper;
 	}
@@ -35,7 +35,7 @@ class IdentityController {
 	@AuthorityAccess(Operation.Constants.LIST_IDENTITY)
 	@GetMapping({"", "/"})
 	public String listIdentities(Model model) {
-		model.addAttribute(ATTR_IDENTITIES, DPShortcut.read(service::findAll, mapper::map));
+		model.addAttribute(ATTR_IDENTITIES, DPShortcut.read(service::findAll, mapper::mapToIdentityDtoList));
 		return "identities/list";
 	}
 	
@@ -43,7 +43,7 @@ class IdentityController {
 	@GetMapping("/{id}")
 	public String viewIdentity(@PathVariable UUID id, Model model)
 			throws ModelNotFoundException {
-		model.addAttribute(ATTR_IDENTITY, DPShortcut.read(id, service::getById, mapper::map));
+		model.addAttribute(ATTR_IDENTITY, DPShortcut.read(id, service::getById, mapper::mapToIdentityDto));
 		return "identities/view";
 	}
 	

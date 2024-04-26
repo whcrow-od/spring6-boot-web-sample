@@ -1,11 +1,11 @@
-package ua.od.whcrow.samples.spring6.boot_web.identity.web;
+package ua.od.whcrow.samples.spring6.boot_web.identity.web.mvc;
 
 import ua.od.whcrow.samples.spring6.boot_web._global.mapping.EmbeddableAuditDto;
 
 import java.util.Set;
 import java.util.UUID;
 
-record IdentityProvideDto(
+record IdentityDto(
 		UUID id,
 		String username,
 		boolean enabled,
