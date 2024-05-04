@@ -11,7 +11,9 @@ import java.util.function.Function;
 
 public final class Msg {
 	
+	public static final Function<Object,String> STRINGIFIER = Msg::stringify;
 	public static final String DELIMITER = "{}";
+	public static final String NULL = String.valueOf((Object) null);
 	
 	private Msg()
 			throws UtilClassInstantiationException {
@@ -34,7 +36,7 @@ public final class Msg {
 	@Nonnull
 	public static String stringify(@Nullable Object o) {
 		if (o == null) {
-			return "NULL";
+			return NULL;
 		}
 		if (o.getClass().isArray()) {
 			o = _convertArrayObjectToList(o);
@@ -42,7 +44,6 @@ public final class Msg {
 		return o.toString();
 	}
 	
-	// FIXME: Msg.format("{} not found", "Identity") => "Identity" instead of "Identity not found"
 	@Nonnull
 	public static String format(@Nonnull Function<Object,String> stringifier, @Nonnull String delimiter,
 			@Nonnull String msg, Object... args) {
@@ -50,35 +51,30 @@ public final class Msg {
 		Assert.notBlank(delimiter, "delimiter");
 		Assert.notNull(msg, "msg");
 		StringBuilder builder = new StringBuilder(msg.length() + (args.length * 32));
-		for (int argIndex = 0, delimiterIndex, textIndex = 0; argIndex < args.length; argIndex++) {
-			delimiterIndex = msg.indexOf(delimiter, textIndex);
-			if (delimiterIndex == -1) {
-				if (textIndex == 0) {
-					return msg;
-				}
-				return builder.append(msg, textIndex, msg.length()).toString();
-			}
+		int argIndex = 0, delimiterIndex, textIndex = 0;
+		while ((delimiterIndex = msg.indexOf(delimiter, textIndex)) != -1) {
 			builder.append(msg, textIndex, delimiterIndex);
-			String strArg;
-			try {
-				strArg = stringifier.apply(args[argIndex]);
-			} catch (Exception e) {
-				strArg = "!STRINGIFIER-EXCEPTION " + e + "!";
+			if (argIndex < args.length) {
+				String strArg;
+				try {
+					strArg = stringifier.apply(args[argIndex++]);
+				} catch (Exception e) {
+					strArg = "!STRINGIFIER-EXCEPTION " + e + "!";
+				}
+				builder.append(strArg);
 			}
-			builder.append(strArg);
 			textIndex = delimiterIndex + delimiter.length();
 		}
+		if (textIndex == 0) {
+			return msg;
+		}
+		builder.append(msg, textIndex, msg.length());
 		return builder.toString();
 	}
 	
 	@Nonnull
-	public static String format(@Nonnull Function<Object,String> stringifier, @Nonnull String msg, Object... args) {
-		return format(stringifier, DELIMITER, msg, args);
-	}
-	
-	@Nonnull
 	public static String format(@Nonnull String msg, Object... args) {
-		return format(Msg::stringify, msg, args);
+		return format(STRINGIFIER, DELIMITER, msg, args);
 	}
 	
 }
