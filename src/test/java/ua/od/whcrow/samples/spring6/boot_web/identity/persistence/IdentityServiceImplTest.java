@@ -36,7 +36,7 @@ class IdentityServiceImplTest {
 	private Identity identity;
 	
 	@Test
-	void checkWhetherIdentityEntityProviderIsSubject() {
+	void checkWhetherIdentityModelServiceIsSubject() {
 		assertEquals(identityServiceImpl, modelService);
 	}
 	
