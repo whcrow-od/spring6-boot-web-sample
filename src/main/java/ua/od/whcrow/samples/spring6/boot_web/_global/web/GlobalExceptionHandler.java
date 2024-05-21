@@ -56,9 +56,9 @@ class GlobalExceptionHandler {
 			return null;
 		}
 		if (responseEntity.getStatusCode().is5xxServerError()) {
-			log.error(Msg.format("Issue: {}", responseEntity.getBody()), exception);
+			log.error(Msg.format("{}", responseEntity.getBody()), exception);
 		} else {
-			log.warn(Msg.format("Issue: {}; caused by {}", responseEntity.getBody(), exception));
+			log.warn(Msg.format("{}; caused by {}", responseEntity.getBody(), exception));
 		}
 		if (WebUtils.isApiRequest(request)) {
 			return responseEntity;

@@ -19,7 +19,6 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 import ua.od.whcrow.samples.spring6.boot_web._commons.model.exceptions.ModelNotFoundException;
-import ua.od.whcrow.samples.spring6.boot_web._commons.util.Msg;
 import ua.od.whcrow.samples.spring6.boot_web._commons.web.exceptions.ParameterException;
 import ua.od.whcrow.samples.spring6.boot_web._commons.web.exceptions.StatusException;
 import ua.od.whcrow.samples.spring6.boot_web._commons.web.exceptions.UnprocessableEntityException;
@@ -30,6 +29,10 @@ import java.util.stream.Collectors;
 
 @ControllerAdvice(annotations = RestController.class)
 class RestExceptionHandler extends ResponseEntityExceptionHandler {
+	
+	// MC - message code
+	private static final String MC_PROBLEM_DETAIL_404 = "app.web.problemDetail.404";
+	private static final String MC_PROBLEM_DETAIL_500 = "app.web.problemDetail.500";
 	
 	@Nullable
 	private ResponseEntity<Object> handleUnknownException(Exception exception, WebRequest request) {
@@ -42,7 +45,8 @@ class RestExceptionHandler extends ResponseEntityExceptionHandler {
 			headers = errorResponse.getHeaders();
 		} else {
 			statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
-			body = createProblemDetail(exception, statusCode, "Unexpected error occurred", null, null, request);
+			body = createProblemDetail(exception, statusCode, statusCode.toString(), MC_PROBLEM_DETAIL_500,
+					null, request);
 			headers = HttpHeaders.EMPTY;
 		}
 		return handleExceptionInternal(exception, body, headers, statusCode, request);
@@ -77,10 +81,11 @@ class RestExceptionHandler extends ResponseEntityExceptionHandler {
 	@Nullable
 	@ExceptionHandler
 	public ResponseEntity<Object> handleException(ModelNotFoundException exception, WebRequest request) {
-		ProblemDetail body = createProblemDetail(exception, HttpStatus.NOT_FOUND,
-				Msg.format("{} not found", exception.getModelType().getSimpleName()), null, null, request);
+		HttpStatus status = HttpStatus.NOT_FOUND;
+		ProblemDetail body = createProblemDetail(exception, status, status.toString(), MC_PROBLEM_DETAIL_404,
+				new Object[]{exception.getModelType().getSimpleName()}, request);
 		body.setProperties(exception.getAttributes());
-		return handleExceptionInternal(exception, body, HttpHeaders.EMPTY, HttpStatus.NOT_FOUND, request);
+		return handleExceptionInternal(exception, body, HttpHeaders.EMPTY, status, request);
 	}
 	
 	@Nullable
