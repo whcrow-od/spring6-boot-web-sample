@@ -4,6 +4,7 @@ import jakarta.annotation.Nonnull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ua.od.whcrow.samples.spring6.boot_web._commons.util.Assert;
 import ua.od.whcrow.samples.spring6.boot_web.identity.Identity;
 import ua.od.whcrow.samples.spring6.boot_web.identity.IdentityService;
@@ -43,14 +44,15 @@ class IdentityServiceImpl implements IdentityService {
 	@Nonnull
 	@Override
 	public Optional<Identity> findByUsername(@Nonnull String username) {
-		Assert.notNull(username, "name");
+		Assert.notNull(username, "username");
 		return identityRepository.findByUsername(username);
 	}
 	
+	@Transactional
 	@Nonnull
 	@Override
 	public Identity save(@Nonnull Identity identity) {
-		Assert.notNull(identity, "user");
+		Assert.notNull(identity, "identity");
 		return identityRepository.save(identity);
 	}
 	
