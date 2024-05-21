@@ -2,7 +2,6 @@ package ua.od.whcrow.samples.spring6.boot_web._global.web;
 
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatusCode;
@@ -15,7 +14,6 @@ import org.springframework.web.servlet.View;
 import ua.od.whcrow.samples.spring6.boot_web._commons.util.Assert;
 import ua.od.whcrow.samples.spring6.boot_web._commons.util.Msg;
 import ua.od.whcrow.samples.spring6.boot_web._commons.web.ViewProvider;
-import ua.od.whcrow.samples.spring6.boot_web._commons.web.WebUtils;
 
 @Slf4j
 @ControllerAdvice
@@ -58,12 +56,11 @@ class GlobalExceptionHandler {
 			return null;
 		}
 		if (responseEntity.getStatusCode().is5xxServerError()) {
-			log.error(Msg.format("Body: {}", responseEntity.getBody()), exception);
+			log.error(Msg.format("Issue: {}", responseEntity.getBody()), exception);
 		} else {
-			log.warn(Msg.format("Body: {}; caused by {}", responseEntity.getBody(), exception));
+			log.warn(Msg.format("Issue: {}; caused by {}", responseEntity.getBody(), exception));
 		}
-		HttpServletRequest servletRequest = WebUtils.getHttpServletRequest(request);
-		if (WebUtils.isApiRequest(servletRequest, WebConstants.REQ_P_API_ROOT)) {
+		if (WebUtils.isApiRequest(request)) {
 			return responseEntity;
 		}
 		ModelAndView modelAndView = new ModelAndView();

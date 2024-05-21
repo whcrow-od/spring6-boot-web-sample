@@ -20,7 +20,6 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 import ua.od.whcrow.samples.spring6.boot_web._commons.model.exceptions.ModelNotFoundException;
 import ua.od.whcrow.samples.spring6.boot_web._commons.util.Msg;
-import ua.od.whcrow.samples.spring6.boot_web._commons.web.WebUtils;
 import ua.od.whcrow.samples.spring6.boot_web._commons.web.exceptions.ParameterException;
 import ua.od.whcrow.samples.spring6.boot_web._commons.web.exceptions.StatusException;
 import ua.od.whcrow.samples.spring6.boot_web._commons.web.exceptions.UnprocessableEntityException;
