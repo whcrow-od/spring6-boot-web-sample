@@ -6,7 +6,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.metamodel.Attribute;
 import jakarta.persistence.metamodel.EntityType;
-import ua.od.whcrow.samples.spring6.boot_web._commons.collections.LimitedSizeHashMap;
+import ua.od.whcrow.samples.spring6.boot_web._commons.collections.FixedSizeHashMap;
 import ua.od.whcrow.samples.spring6.boot_web._commons.persistence.exceptions.EntityAttributeNotFoundException;
 import ua.od.whcrow.samples.spring6.boot_web._commons.util.Assert;
 
@@ -28,8 +28,8 @@ public abstract class EntityMetaProviderImpl<ENT> implements EntityMetaProvider<
 	
 	private EntityType<ENT> entityType;
 	private EntityMeta entityMeta;
-	private final LimitedSizeHashMap<String,AttributeMeta> deepAttributesCache =
-			new LimitedSizeHashMap<>(DEEP_ATTRIBUTES_CACHE_SIZE);
+	private final FixedSizeHashMap<String,AttributeMeta> deepAttributesCache =
+			new FixedSizeHashMap<>(DEEP_ATTRIBUTES_CACHE_SIZE);
 	
 	@PostConstruct
 	protected void postConstruct() {

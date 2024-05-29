@@ -9,11 +9,11 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 //@TestMethodOrder(MethodOrderer.DisplayName.class)
 //@DisplayNameGeneration(ReplaceCamelCase.class)
-class LimitedSizeHashMapTest {
+class FixedSizeHashMapTest {
 	
 	@Test
 	void testConstructingWithNegativeSizeLimit() {
-		assertThrows(IllegalArgumentException.class, () -> new LimitedSizeHashMap<>(-1),
+		assertThrows(IllegalArgumentException.class, () -> new FixedSizeHashMap<>(-1),
 				"negative size limit must lead to exception");
 	}
 	
@@ -25,11 +25,11 @@ class LimitedSizeHashMapTest {
 		for (int i = extra; i < sizeLimit + extra; i++) {
 			expectedMap.put(i, i);
 		}
-		var argMap = new LimitedSizeHashMap<Integer,Integer>(sizeLimit);
+		var argMap = new FixedSizeHashMap<Integer,Integer>(sizeLimit);
 		for (int i = 0; i < sizeLimit + extra; i++) {
 			argMap.put(i, i);
 		}
-		var actualMap = new LimitedSizeHashMap<>(sizeLimit, argMap);
+		var actualMap = new FixedSizeHashMap<>(sizeLimit, argMap);
 		assertIterableEquals(actualMap.keySet(), expectedMap.keySet(),
 				"eldest entry must be removed when specified map size is greater than limit");
 	}
@@ -42,7 +42,7 @@ class LimitedSizeHashMapTest {
 		for (int i = extra; i < sizeLimit + extra; i++) {
 			expectedMap.put(i, i);
 		}
-		var actualMap = new LimitedSizeHashMap<Integer,Integer>(sizeLimit);
+		var actualMap = new FixedSizeHashMap<Integer,Integer>(sizeLimit);
 		for (int i = 0; i < sizeLimit + extra; i++) {
 			actualMap.put(i, i);
 		}
