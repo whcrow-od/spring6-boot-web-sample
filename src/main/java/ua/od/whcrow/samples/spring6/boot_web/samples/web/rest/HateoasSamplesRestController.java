@@ -3,7 +3,7 @@ package ua.od.whcrow.samples.spring6.boot_web.samples.web.rest;
 import jakarta.annotation.Nonnull;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
-import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
+import org.springframework.hateoas.Link;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,19 +12,24 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ua.od.whcrow.samples.spring6.boot_web._commons.collections.FixedSizeHashMap;
+import ua.od.whcrow.samples.spring6.boot_web._commons.security.CsrfIgnore;
 import ua.od.whcrow.samples.spring6.boot_web._commons.util.Assert;
 import ua.od.whcrow.samples.spring6.boot_web._commons.web.exceptions.NotFoundException;
 import ua.od.whcrow.samples.spring6.boot_web._commons.web.exceptions.UnprocessableEntityException;
 import ua.od.whcrow.samples.spring6.boot_web.samples.SamplesConstants;
 
+import java.util.List;
 import java.util.Map;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
-@RequestMapping(SamplesConstants.REQ_P_API_SAMPLES + "/hateoas")
+@RequestMapping(HateoasSamplesRestController.REQUEST_PATH)
+@CsrfIgnore
 class HateoasSamplesRestController {
+	
+	static final String REQUEST_PATH = SamplesConstants.REQ_P_API_SAMPLES + "/hateoas";
 	
 	private final Map<Integer,Person> persons = new FixedSizeHashMap<>(10, Map.of(
 			1, new Person(1, "Joanna", "Doe"),
@@ -32,17 +37,21 @@ class HateoasSamplesRestController {
 	));
 	
 	@Nonnull
-	private EntityModel<Person> createPersonModel(@Nonnull Person person, @Nonnull WebMvcLinkBuilder selfLinkBuilder) {
+	private Iterable<Link> getDefaultLinks() {
+		return List.of(
+				linkTo(methodOn(getClass()).listPersons()).withRel("list"),
+				linkTo(methodOn(getClass()).createPerson(null)).withRel("create")
+		);
+	}
+	
+	@Nonnull
+	private Iterable<Link> getPersonLinks(@Nonnull Person person) {
 		Assert.notNull(person, "person");
-		Assert.notNull(selfLinkBuilder, "selfLinkBuilder");
-		EntityModel<Person> entityModel = EntityModel.of(person);
-		entityModel.add(selfLinkBuilder.withSelfRel());
-		entityModel.add(linkTo(methodOn(getClass()).createPerson(person)).withRel("create"));
-		entityModel.add(linkTo(methodOn(getClass()).readPerson(person.id())).withRel("read"));
-		entityModel.add(linkTo(methodOn(getClass()).updatePerson(person.id(), person)).withRel("update"));
-		entityModel.add(linkTo(methodOn(getClass()).deletePerson(person.id())).withRel("delete"));
-		entityModel.add(linkTo(methodOn(getClass()).listPersons()).withRel("list"));
-		return entityModel;
+		return List.of(
+				linkTo(methodOn(getClass()).readPerson(person.id())).withRel("read"),
+				linkTo(methodOn(getClass()).updatePerson(person.id(), person)).withRel("update"),
+				linkTo(methodOn(getClass()).deletePerson(person.id())).withRel("delete")
+		);
 	}
 	
 	@PostMapping
@@ -52,7 +61,10 @@ class HateoasSamplesRestController {
 					person.id());
 		}
 		persons.put(person.id(), person);
-		return createPersonModel(person, linkTo(methodOn(getClass()).createPerson(person)));
+		return EntityModel.of(person)
+				.add(linkTo(methodOn(getClass()).createPerson(person)).withSelfRel())
+				.add(getDefaultLinks())
+				.add(getPersonLinks(person));
 	}
 	
 	@GetMapping("/{id}")
@@ -61,7 +73,10 @@ class HateoasSamplesRestController {
 		if (person == null) {
 			throw new NotFoundException("Person with ID {} is not found", id);
 		}
-		return createPersonModel(person, linkTo(methodOn(getClass()).readPerson(person.id())));
+		return EntityModel.of(person)
+				.add(linkTo(methodOn(getClass()).readPerson(person.id())).withSelfRel())
+				.add(getDefaultLinks())
+				.add(getPersonLinks(person));
 	}
 	
 	@PostMapping("/{id}")
@@ -74,7 +89,10 @@ class HateoasSamplesRestController {
 			throw new NotFoundException("Person with ID {} is not found", id);
 		}
 		persons.put(id, person);
-		return createPersonModel(person, linkTo(methodOn(getClass()).updatePerson(id, person)));
+		return EntityModel.of(person)
+				.add(linkTo(methodOn(getClass()).updatePerson(id, person)).withSelfRel())
+				.add(getDefaultLinks())
+				.add(getPersonLinks(person));
 	}
 	
 	@DeleteMapping("/{id}")
@@ -83,13 +101,16 @@ class HateoasSamplesRestController {
 		if (person == null) {
 			throw new NotFoundException("Person with ID {} is not found", id);
 		}
-		return createPersonModel(person, linkTo(methodOn(getClass()).deletePerson(id)));
+		persons.remove(id);
+		return EntityModel.of(person)
+				.add(getDefaultLinks());
 	}
 	
 	@GetMapping
 	CollectionModel<Person> listPersons() {
 		return CollectionModel.of(persons.values())
-				.add(linkTo(methodOn(getClass()).listPersons()).withSelfRel());
+				.add(linkTo(methodOn(getClass()).listPersons()).withSelfRel())
+				.add(getDefaultLinks());
 	}
 	
 	private record Person(int id, String firstName, String lastName) {}
