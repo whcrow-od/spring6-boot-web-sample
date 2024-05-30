@@ -1,6 +1,5 @@
 package ua.od.whcrow.samples.spring6.boot_web._global.security;
 
-import jakarta.annotation.Nonnull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest;
 import org.springframework.context.annotation.Bean;
@@ -8,10 +7,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.AuthorizeHttpRequestsConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import ua.od.whcrow.samples.spring6.boot_web._commons.security.RequestMappingMethodAccess;
+import ua.od.whcrow.samples.spring6.boot_web._commons.security.RequestMappingMethodAccessConfigurer;
+import ua.od.whcrow.samples.spring6.boot_web._commons.security.RequestMappingMethodCsrfConfigurer;
 import ua.od.whcrow.samples.spring6.boot_web._commons.security.SecurityConstants;
 
 @Configuration
@@ -38,15 +37,16 @@ class WebSecurityConfig {
 	//  https://www.baeldung.com/role-and-privilege-for-spring-security-registration
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity httpSecurity, AuthSuccessHandler authSuccessHandler,
-			RequestMappingMethodAccess requestMappingMethodAccess)
+			RequestMappingMethodAccessConfigurer requestMappingMethodAccessConfigurer,
+			RequestMappingMethodCsrfConfigurer requestMappingMethodCsrfConfigurer)
 			throws Exception {
-		httpSecurity.authorizeHttpRequests(registry -> {
-			configureActuatorAccess(registry);
-			requestMappingMethodAccess.configure(registry);
-			registry.requestMatchers("/assets/**").permitAll()
-					.requestMatchers("/h2-console/**").hasAuthority(adminAuthority)
-					.anyRequest().authenticated();
-		});
+		httpSecurity.authorizeHttpRequests(registry -> requestMappingMethodAccessConfigurer.configure(registry)
+				.requestMatchers(EndpointRequest.toAnyEndpoint()).hasAuthority(adminAuthority)
+				// TODO: No hardcode for assets path
+				.requestMatchers("/assets/**").permitAll()
+				// TODO: No hardcode for H2 console path
+				.requestMatchers("/h2-console/**").hasAuthority(adminAuthority)
+				.anyRequest().authenticated());
 		// TODO: Support both auth methods - login page and HTTP basic auth
 		// Use HTTP Basic authentication
 		//httpSecurity.httpBasic(Customizer.withDefaults());
@@ -64,17 +64,9 @@ class WebSecurityConfig {
 				.accessDeniedPage("/access-denied")
 		);
 		//httpSecurity.csrf(configurer -> configurer.disable());
-		httpSecurity.csrf(csrf -> csrf.ignoringRequestMatchers("/h2-console/**"));
+		httpSecurity.csrf(csrf -> requestMappingMethodCsrfConfigurer.configure(csrf)
+				.ignoringRequestMatchers("/h2-console/**"));
 		return httpSecurity.build();
-	}
-	
-	private void configureActuatorAccess(
-			@Nonnull AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry registry) {
-		if (adminAuthority == null) {
-			registry.requestMatchers(EndpointRequest.toAnyEndpoint()).denyAll();
-		} else {
-			registry.requestMatchers(EndpointRequest.toAnyEndpoint()).hasAuthority(adminAuthority);
-		}
 	}
 	
 }

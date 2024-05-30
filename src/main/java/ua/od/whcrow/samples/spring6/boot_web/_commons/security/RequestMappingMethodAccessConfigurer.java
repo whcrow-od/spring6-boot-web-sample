@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 
 @Lazy
 @Component
-public class RequestMappingMethodAccess {
+public class RequestMappingMethodAccessConfigurer {
 	
 	@Value(SecurityConstants.AP_VP_SECURITY_ADMIN_AUTHORITY)
 	private String adminAuthority;
@@ -30,12 +30,13 @@ public class RequestMappingMethodAccess {
 	
 	// There can be multiple RequestMappingHandlerMapping registered, so @Qualifier is necessary for injecting a default one.
 	// For example, Spring Actuator also provides its own RequestMappingHandlerMapping implementation.
-	public RequestMappingMethodAccess(
+	public RequestMappingMethodAccessConfigurer(
 			@Qualifier("requestMappingHandlerMapping") RequestMappingHandlerMapping requestMappingHandlerMapping) {
 		this.requestMappingHandlerMapping = requestMappingHandlerMapping;
 	}
 	
-	public void configure(
+	@Nonnull
+	public AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry configure(
 			@Nonnull AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry registry) {
 		Assert.notNull(registry, "registry");
 		requestMappingHandlerMapping.getHandlerMethods().forEach((mapping, method) -> {
@@ -64,6 +65,7 @@ public class RequestMappingMethodAccess {
 				handle(generalAccess, matchRequestsSupplier);
 			}
 		});
+		return registry;
 	}
 	
 	private void handle(@Nonnull Set<AuthorityAccess> authorityAccessSet,
