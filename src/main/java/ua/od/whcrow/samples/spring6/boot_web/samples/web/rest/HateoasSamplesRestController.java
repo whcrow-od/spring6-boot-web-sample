@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ua.od.whcrow.samples.spring6.boot_web._commons.collections.FixedSizeHashMap;
+import ua.od.whcrow.samples.spring6.boot_web._commons.util.Assert;
 import ua.od.whcrow.samples.spring6.boot_web._commons.web.exceptions.NotFoundException;
 import ua.od.whcrow.samples.spring6.boot_web._commons.web.exceptions.UnprocessableEntityException;
 import ua.od.whcrow.samples.spring6.boot_web.samples.SamplesConstants;
@@ -31,9 +32,11 @@ class HateoasSamplesRestController {
 	));
 	
 	@Nonnull
-	private EntityModel<Person> createPersonModel(@Nonnull Person person, WebMvcLinkBuilder self) {
+	private EntityModel<Person> createPersonModel(@Nonnull Person person, @Nonnull WebMvcLinkBuilder selfLinkBuilder) {
+		Assert.notNull(person, "person");
+		Assert.notNull(selfLinkBuilder, "selfLinkBuilder");
 		EntityModel<Person> entityModel = EntityModel.of(person);
-		entityModel.add(self.withSelfRel());
+		entityModel.add(selfLinkBuilder.withSelfRel());
 		entityModel.add(linkTo(methodOn(getClass()).createPerson(person)).withRel("create"));
 		entityModel.add(linkTo(methodOn(getClass()).readPerson(person.id())).withRel("read"));
 		entityModel.add(linkTo(methodOn(getClass()).updatePerson(person.id(), person)).withRel("update"));
