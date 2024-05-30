@@ -47,6 +47,10 @@ class HateoasSamplesRestController {
 	
 	@PostMapping
 	EntityModel<Person> createPerson(@RequestBody Person person) {
+		if (persons.containsKey(person.id())) {
+			throw new UnprocessableEntityException("Person with ID {} already exists", Map.of("id", person.id()),
+					person.id());
+		}
 		persons.put(person.id(), person);
 		return createPersonModel(person, linkTo(methodOn(getClass()).createPerson(person)));
 	}
